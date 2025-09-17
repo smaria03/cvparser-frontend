@@ -85,6 +85,19 @@ const CVUploadPage = () => {
         }
     }
 
+    const handleDeleteExperience = (index) => {
+        const newExperiences = summary.experiences.filter((_, i) => i !== index)
+        setSummary(prev => ({ ...prev, experiences: newExperiences }))
+    }
+
+    const handleAddExperience = () => {
+        const newExperience = { job_details: '', period: '' }
+        setSummary(prev => ({
+            ...prev,
+            experiences: [...(prev.experiences || []), newExperience]
+        }))
+    }
+
     const renderSummary = () => {
         if (!summary) return null
 
@@ -154,23 +167,35 @@ const CVUploadPage = () => {
                 <div>
                     <h3 className="text-lg font-semibold mt-6 mb-2">Experiences</h3>
                     {summary.experiences.map((exp, index) => (
-                        <div key={index} className="mb-4">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <input
-                                    type="text"
-                                    value={exp.job_details}
-                                    onChange={(e) => handleExperienceChange(index, 'job_details', e.target.value)}
-                                    className="flex-1 border rounded px-3 py-2"
-                                    placeholder="Job details"/>
-                                <input
-                                    type="text"
-                                    value={exp.period}
-                                    onChange={(e) => handleExperienceChange(index, 'period', e.target.value)}
-                                    className="w-48 text-sm text-gray-500 border rounded px-2 py-1"
-                                    placeholder="Period"/>
-                            </div>
+                        <div key={index} className="mb-4 flex items-center gap-2">
+                            <input
+                                type="text"
+                                value={exp.job_details}
+                                onChange={(e) => handleExperienceChange(index, 'job_details', e.target.value)}
+                                className="flex-1 border rounded px-3 py-2"
+                                placeholder="Job details"/>
+                            <input
+                                type="text"
+                                value={exp.period}
+                                onChange={(e) => handleExperienceChange(index, 'period', e.target.value)}
+                                className="w-48 text-sm text-gray-500 border rounded px-2 py-1"
+                                placeholder="Period"/>
+                            <button
+                                type="button"
+                                onClick={() => handleDeleteExperience(index)}
+                                className="text-red-500 hover:text-red-700 font-bold text-lg"
+                                title="Delete">
+                                X
+                            </button>
                         </div>
                     ))}
+                    <button
+                        type="button"
+                        onClick={handleAddExperience}
+                        className="mt-2 font-semibold"
+                        title="Add Experience">
+                        +Add
+                    </button>
                 </div>
                 <div className="pt-4">
                     <button
