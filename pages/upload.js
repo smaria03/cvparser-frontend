@@ -98,6 +98,12 @@ const CVUploadPage = () => {
         }))
     }
 
+    const JOB_OPTIONS = [
+        'Full Stack Software Engineer',
+        'Internship',
+        'QA'
+    ]
+
     const renderSummary = () => {
         if (!summary) return null
 
@@ -121,7 +127,20 @@ const CVUploadPage = () => {
                             onChange={(e) => handleChange('email', e.target.value)}
                             className="mt-1 block w-full border rounded px-3 py-2"/>
                     </label>
-
+                    <label>
+                        <span className="font-medium">Applied For:</span>
+                        <select
+                            value={summary.applied_for || ''}
+                            onChange={(e) => handleChange('applied_for', e.target.value)}
+                            className="mt-1 block w-full border rounded px-3 py-2">
+                            <option value="">Select job</option>
+                            {JOB_OPTIONS.map((job) => (
+                                <option key={job} value={job}>
+                                    {job}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
                     <label>
                         <span className="font-medium">Current Job Details:</span>
                         <input
