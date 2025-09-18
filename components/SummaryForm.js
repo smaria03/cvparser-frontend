@@ -76,7 +76,7 @@ const SummaryForm = ({ summary, sheets, onChange, onExperienceChange, onAddExp, 
                     <select
                         value={summary.applied_for || ''}
                         onChange={(e) => onChange('applied_for', e.target.value)}
-                        className="mt-1 block w-full border rounded px-3 py-2">
+                        className="mt-1 block w-full border rounded px-3 py-2 bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Select job</option>
                         {JOB_OPTIONS.map((job) => (
                             <option key={job} value={job}>
@@ -133,10 +133,12 @@ const SummaryForm = ({ summary, sheets, onChange, onExperienceChange, onAddExp, 
                     <select
                         value={summary.sheet || ''}
                         onChange={(e) => onChange('sheet', e.target.value)}
-                        className="mt-1 block w-full border rounded px-3 py-2">
+                        className="mt-1 block w-full border rounded px-3 py-2 bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Select sheet</option>
                         {sheets.map((sheet) => (
-                            <option key={sheet} value={sheet}>{sheet}</option>
+                            <option key={sheet} value={sheet}>
+                                {sheet}
+                            </option>
                         ))}
                     </select>
                 </label>
