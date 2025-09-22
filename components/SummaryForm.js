@@ -3,12 +3,6 @@ import React from 'react'
 const SummaryForm = ({ summary, sheets, onChange, onExperienceChange, onAddExp, onDelExp, onSave }) => {
     if (!summary) return null
 
-    const JOB_OPTIONS = [
-        'Full Stack Software Engineer',
-        'Internship',
-        'QA'
-    ]
-
     const renderExperiences = () => (
         <div>
             <h3 className="text-lg font-semibold mb-2">Experiences</h3>
@@ -73,17 +67,13 @@ const SummaryForm = ({ summary, sheets, onChange, onExperienceChange, onAddExp, 
                 </label>
                 <label>
                     <span className="text-lg font-semibold mt-6 mb-2">Applied For:</span>
-                    <select
+                    <input
+                        type="text"
                         value={summary.applied_for || ''}
                         onChange={(e) => onChange('applied_for', e.target.value)}
-                        className="mt-1 block w-full border rounded px-3 py-2 bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select job</option>
-                        {JOB_OPTIONS.map((job) => (
-                            <option key={job} value={job}>
-                                {job}
-                            </option>
-                        ))}
-                    </select>
+                        className="mt-1 block w-full border rounded px-3 py-2"
+                        placeholder="Enter job title"
+                    />
                 </label>
                 <label>
                     <span className="text-lg font-semibold mt-6 mb-2">Current Job Details:</span>
