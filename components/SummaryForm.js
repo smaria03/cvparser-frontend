@@ -7,7 +7,7 @@ const SummaryForm = ({ summary, sheets, onChange, onExperienceChange, onAddExp, 
         <div>
             <h3 className="text-lg font-semibold mb-2">Experiences</h3>
             {summary.experiences.map((exp, index) => (
-                <div key={index} className=" flex items-center gap-2">
+                <div key={index} className=" flex items-center gap-2 mb-2">
                     <input
                         type="text"
                         value={exp.job_details}
@@ -47,6 +47,17 @@ const SummaryForm = ({ summary, sheets, onChange, onExperienceChange, onAddExp, 
         <section className="mt-8 bg-white border shadow rounded p-6 space-y-6">
             <h2 className="text-2xl font-bold mb-2">Extracted Summary</h2>
             <div className="grid grid-cols-1 gap-4">
+                {summary?.drive_url && (
+                    <div>
+                        <a
+                            href={summary.drive_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline">
+                            Open candidate folder in Google Drive
+                        </a>
+                    </div>
+                )}
                 <label>
                     <span className="text-lg font-semibold mt-6 mb-2">Name:</span>
                     <input
