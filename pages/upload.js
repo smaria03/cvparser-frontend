@@ -37,14 +37,17 @@ const CVUploadPage = () => {
             const data = await res.json()
             if (!res.ok) throw new Error(data.error || 'Something went wrong')
 
-            setMessage(`Uploaded: ${data.filename}`)
+            setMessage('CV uploaded successfully!')
             setError('')
 
             const summaryRes = await fetch(`http://localhost:3000/api/cvs/${data.id}/extract_summary`)
             const summaryData = await summaryRes.json()
             if (!summaryRes.ok) throw new Error(summaryData.error || 'Failed to extract summary')
 
-            setSummary(summaryData)
+            setSummary({
+                ...summaryData,
+                drive_url: data.drive_url
+            })
         } catch (err) {
             setError(err.message)
             setMessage('')
@@ -60,29 +63,42 @@ const CVUploadPage = () => {
                 .then(data => setSheets(data.sheets || []))
                 .catch(err => console.error('Failed to load sheets', err))
         }
+        const storedMessage = localStorage.getItem('cv_success_message')
+        if (storedMessage) {
+            setMessage(storedMessage)
+            localStorage.removeItem('cv_success_message')
+
+            setTimeout(() => {
+                setMessage('')
+            }, 30000)
+        }
     }, [summary])
 
     const handleChange = (field, value) => {
         setSummary(prev => ({ ...prev, [field]: value }))
     }
 
-    const handleExperienceChange = (index, key, value) => {
+    const handleExperienceChange = async (index, key, value) => {
         const newExperiences = [...summary.experiences]
         newExperiences[index][key] = value
         setSummary(prev => ({ ...prev, experiences: newExperiences }))
+        await recalculateExperience(newExperiences)
     }
 
-    const handleAddExperience = () => {
+    const handleAddExperience = async () => {
         const newExperience = { job_details: '', period: '' }
+        const newExperiences = [...(summary.experiences || []), newExperience]
         setSummary(prev => ({
             ...prev,
-            experiences: [...(prev.experiences || []), newExperience]
+            experiences: newExperiences
         }))
+        await recalculateExperience(newExperiences)
     }
 
-    const handleDeleteExperience = (index) => {
+    const handleDeleteExperience = async (index) => {
         const newExperiences = summary.experiences.filter((_, i) => i !== index)
         setSummary(prev => ({ ...prev, experiences: newExperiences }))
+        await recalculateExperience(newExperiences)
     }
 
     const handleSaveToSheet = async () => {
@@ -98,12 +114,31 @@ const CVUploadPage = () => {
             const data = await res.json()
             if (!res.ok) throw new Error(data.error || 'Save failed')
 
-            setMessage(data.message || 'Saved successfully to Excel')
-            setError('')
+            localStorage.setItem('cv_success_message', data.message || 'Saved successfully to Excel!')
+            window.location.reload()
+        } catch (err) {
+            setError(err.message)
+            setMessage('')
+        }
+    }
 
-            setTimeout(() => {
-                window.location.reload()
-            }, 1000)
+    const recalculateExperience = async (experiences) => {
+        try {
+            const res = await fetch('http://localhost:3000/api/cvs/recalculate_experience', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ experiences })
+            })
+
+            const data = await res.json()
+            if (!res.ok) throw new Error(data.error || 'Failed to recalculate')
+
+            setSummary(prev => ({
+                ...prev,
+                total_experience_years: data.total_experience_years
+            }))
         } catch (err) {
             setError(err.message)
             setMessage('')
